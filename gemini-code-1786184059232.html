@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Můj Minecraft Server</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #22c55e;
+            --primary-hover: #16a34a;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header / Hero Section */
+        header {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 1)), 
+                        url('https://images.unsplash.com/photo-1627856013091-fed6e4e30025?auto=format&fit=crop&w=1200&q=80') center/cover;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* IP Box & Button */
+        .ip-box {
+            display: inline-flex;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            gap: 15px;
+        }
+
+        .ip-text {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .btn-copy {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Main Content */
+        container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 8px;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        ul li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid #334155;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Můj MC Server</h1>
+        <p>Nejlepší BedWars & OneBlock zážitek!</p>
+        
+        <div class="ip-box">
+            <span class="ip-text" id="server-ip">mc.muj-server.cz</span>
+            <button class="btn-copy" onclick="copyIP()">Kopírovat IP</button>
+        </div>
+    </header>
+
+    <container>
+        <div class="card">
+            <h2>🎮 Co u nás najdeš?</h2>
+            <ul>
+                <li><strong>BedWars:</strong> Custom mapy, shop a rychlé hry.</li>
+                <li><strong>OneBlock:</strong> Vlastní ostrovy a unikátní fáze.</li>
+                <li><strong>Survival:</strong> Ekonomika, rezidence a skvělá komunita.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📜 Základní Pravidla</h2>
+            <ul>
+                <li>Zákaz jakéhokoliv cheatování a hacků.</li>
+                <li>Chovej se k ostatním slušně v chatu.</li>
+                <li>Nenič stavby ostatním hráčům.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🛡️ Admin Tým</h2>
+            <ul>
+                <li><strong>Majitel:</strong> YourName</li>
+                <li><strong>Developer:</strong> AdminName</li>
+                <li><strong>Helper:</strong> HelperName</li>
+            </ul>
+        </div>
+    </container>
+
+    <footer>
+        &copy; 2026 Můj Minecraft Server. Všechna práva vyhrazena.
+    </footer>
+
+    <script>
+        function copyIP() {
+            const ipText = document.getElementById("server-ip").innerText;
+            navigator.clipboard.writeText(ipText);
+            
+            const btn = document.querySelector(".btn-copy");
+            btn.innerText = "Zkopírováno!";
+            btn.style.backgroundColor = "#16a34a";
+            
+            setTimeout(() => {
+                btn.innerText = "Kopírovat IP";
+                btn.style.backgroundColor = "var(--primary)";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
