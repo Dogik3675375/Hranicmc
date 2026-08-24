@@ -1,1187 +1,2208 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>HranicMC | Minecraft Server</title>
-    <meta name="description" content="HranicMC – moderní Minecraft server.">
-    <meta name="theme-color" content="#00ff66">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #050505;
-            color: white;
-            overflow-x: hidden;
-        }
-
-        /* =========================
-           ANIMOVANÉ POZADÍ
-        ========================= */
-
-        .background {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: -2;
-
-            background:
-                radial-gradient(
-                    circle at 20% 20%,
-                    rgba(0,255,100,0.08),
-                    transparent 25%
-                ),
-                radial-gradient(
-                    circle at 80% 70%,
-                    rgba(255,0,60,0.07),
-                    transparent 25%
-                ),
-                radial-gradient(
-                    circle at 50% 100%,
-                    rgba(108,92,231,0.06),
-                    transparent 25%
-                ),
-                #050505;
-        }
-
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(3px);
-            opacity: 0.12;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        .bubble:nth-child(1) {
-            width: 220px;
-            height: 220px;
-            background: #00ff66;
-            left: 5%;
-            top: 15%;
-        }
-
-        .bubble:nth-child(2) {
-            width: 160px;
-            height: 160px;
-            background: #ff174f;
-            right: 10%;
-            top: 25%;
-            animation-delay: 2s;
-        }
-
-        .bubble:nth-child(3) {
-            width: 280px;
-            height: 280px;
-            background: #6c5ce7;
-            left: 60%;
-            bottom: -100px;
-            animation-delay: 4s;
-        }
-
-        .bubble:nth-child(4) {
-            width: 130px;
-            height: 130px;
-            background: #ff174f;
-            left: 30%;
-            bottom: 10%;
-            animation-delay: 6s;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0) scale(1);
-            }
-
-            50% {
-                transform: translateY(-70px) translateX(40px) scale(1.12);
-            }
-        }
-
-        /* =========================
-           NAVIGACE
-        ========================= */
-
-        nav {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-
-            width: min(1100px, 92%);
-            padding: 13px 18px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            background: rgba(15,15,15,0.75);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 30px;
-
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            z-index: 1000;
-
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-        }
-
-        .logo {
-            font-size: 21px;
-            font-weight: 900;
-            color: #00ff66;
-            text-decoration: none;
-            letter-spacing: 1px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: #aaa;
-            text-decoration: none;
-            padding: 10px 14px;
-            border-radius: 20px;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: white;
-            background: rgba(255,255,255,0.08);
-        }
-
-        /* =========================
-           TLAČÍTKA
-        ========================= */
-
-        .btn {
-            border: none;
-            cursor: pointer;
-            padding: 15px 25px;
-            border-radius: 30px;
-
-            font-size: 16px;
-            font-weight: bold;
-
-            text-decoration: none;
-
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            transition: 0.3s;
-        }
-
-        .btn-primary {
-            color: #001b0b;
-            background: #00ff66;
-            box-shadow: 0 0 30px rgba(0,255,100,0.2);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 0 40px rgba(0,255,100,0.45);
-        }
-
-        .btn-secondary {
-            color: white;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-4px);
-            background: rgba(255,255,255,0.12);
-        }
-
-        /* =========================
-           HERO
-        ========================= */
-
-        .hero {
-            min-height: 100vh;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            text-align: center;
-
-            padding: 120px 20px 70px;
-        }
-
-        .hero-content {
-            max-width: 900px;
-            animation: heroIn 1s ease forwards;
-        }
-
-        @keyframes heroIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .badge {
-            display: inline-block;
-
-            padding: 9px 17px;
-            border-radius: 30px;
-
-            background: rgba(0,255,100,0.08);
-            border: 1px solid rgba(0,255,100,0.2);
-
-            color: #00ff66;
-            font-size: 14px;
-
-            margin-bottom: 25px;
-        }
-
-        .hero h1 {
-            font-size: clamp(60px, 12vw, 125px);
-            line-height: 0.9;
-            font-weight: 1000;
-            letter-spacing: -6px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #ffffff,
-                    #00ff66,
-                    #ffffff
-                );
-
-            background-size: 200% auto;
-
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-
-            animation: gradientMove 5s linear infinite;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HranicMC | Minecraft Server</title>
+<meta name="description" content="HranicMC – moderní Minecraft server.">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#050505;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* =========================
+   ANIMOVANÉ POZADÍ
+========================= */
+
+.background{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-10;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(0,255,100,.09),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 85% 30%,
+            rgba(255,20,70,.07),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 50% 90%,
+            rgba(110,80,255,.08),
+            transparent 30%
+        ),
+        #050505;
+}
+
+.bubble{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(5px);
+    opacity:.13;
+    animation:float 15s infinite ease-in-out;
+}
+
+.bubble:nth-child(1){
+    width:230px;
+    height:230px;
+    background:#00ff66;
+    left:5%;
+    top:15%;
+}
+
+.bubble:nth-child(2){
+    width:170px;
+    height:170px;
+    background:#ff174f;
+    right:10%;
+    top:25%;
+    animation-delay:2s;
+}
+
+.bubble:nth-child(3){
+    width:280px;
+    height:280px;
+    background:#6c5ce7;
+    left:60%;
+    bottom:-100px;
+    animation-delay:4s;
+}
+
+.bubble:nth-child(4){
+    width:130px;
+    height:130px;
+    background:#00ff66;
+    left:30%;
+    bottom:10%;
+    animation-delay:6s;
+}
 
-        @keyframes gradientMove {
-            to {
-                background-position: 200% center;
-            }
-        }
+@keyframes float{
+
+    0%,100%{
+        transform:translate(0,0) scale(1);
+    }
 
-        .hero p {
-            color: #999;
-            font-size: 20px;
+    50%{
+        transform:translate(45px,-70px) scale(1.12);
+    }
+}
 
-            margin: 30px auto;
 
-            max-width: 650px;
+/* =========================
+   NAVIGACE
+========================= */
 
-            line-height: 1.6;
-        }
+nav{
+    position:fixed;
 
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
+    top:15px;
+    left:50%;
 
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+    transform:translateX(-50%);
 
-        /* =========================
-           SECTIONS
-        ========================= */
+    width:min(1150px,92%);
 
-        section {
-            width: min(1100px, 92%);
-            margin: auto;
-            padding: 100px 0;
-        }
+    padding:12px 16px;
 
-        .section-title {
-            text-align: center;
-            margin-bottom: 45px;
-        }
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
-        .section-title span {
-            color: #00ff66;
+    background:rgba(12,12,12,.78);
 
-            font-size: 14px;
-            font-weight: bold;
+    border:
+        1px solid
+        rgba(255,255,255,.09);
 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+    border-radius:35px;
 
-        .section-title h2 {
-            font-size: clamp(35px, 5vw, 55px);
-            margin-top: 10px;
-        }
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
 
-        .section-title p {
-            color: #888;
-            margin-top: 12px;
-        }
+    box-shadow:
+        0 15px 50px
+        rgba(0,0,0,.45);
 
-        /* =========================
-           SERVERY
-        ========================= */
+    z-index:1000;
+}
 
-        .servers {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
-        }
+.logo{
+    color:#00ff66;
 
-        .server-card {
-            position: relative;
-            overflow: hidden;
+    font-size:21px;
+    font-weight:900;
 
-            padding: 35px;
-            min-height: 310px;
+    text-decoration:none;
 
-            border-radius: 30px;
+    letter-spacing:.5px;
+}
 
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
+.nav-links{
+    display:flex;
 
-            transition: 0.4s;
-        }
+    gap:5px;
 
-        .server-card::before {
-            content: "";
+    list-style:none;
+}
 
-            position: absolute;
+.nav-links a{
+    color:#aaa;
 
-            width: 180px;
-            height: 180px;
+    text-decoration:none;
 
-            border-radius: 50%;
+    padding:10px 13px;
 
-            right: -70px;
-            top: -70px;
+    border-radius:22px;
 
-            opacity: 0.13;
+    transition:.3s;
+}
 
-            transition: 0.4s;
-        }
+.nav-links a:hover{
+    color:white;
 
-        .server-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255,255,255,0.06);
-        }
+    background:
+        rgba(255,255,255,.08);
 
-        .server-card:hover::before {
-            transform: scale(1.5);
-        }
+    transform:translateY(-2px);
+}
 
-        /* SMP */
+.nav-links a.active{
+    color:#00ff66;
 
-        .smp {
-            border-color: rgba(0,255,100,0.2);
-        }
+    background:
+        rgba(0,255,100,.08);
+}
 
-        .smp::before {
-            background: #00ff66;
-        }
 
-        .smp .server-tag {
-            color: #00ff66;
-            background: rgba(0,255,100,0.08);
-        }
+/* =========================
+   BUTTONS
+========================= */
 
-        /* BEDWARS */
+.btn{
+    border:none;
 
-        .bedwars {
-            border-color: rgba(255,30,70,0.25);
-        }
+    cursor:pointer;
 
-        .bedwars::before {
-            background: #ff174f;
-        }
+    padding:14px 23px;
 
-        .bedwars .server-tag {
-            color: #ff4269;
-            background: rgba(255,23,79,0.08);
-        }
+    border-radius:30px;
 
-        /* ONEBLOCK */
+    font-size:15px;
+    font-weight:bold;
 
-        .oneblock {
-            border-color: rgba(108,92,231,0.25);
-        }
+    text-decoration:none;
 
-        .oneblock::before {
-            background: #6c5ce7;
-        }
+    display:inline-flex;
 
-        .oneblock .server-tag {
-            color: #8d7cff;
-            background: rgba(108,92,231,0.10);
-        }
+    align-items:center;
+    justify-content:center;
 
-        .server-icon {
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
+    transition:.3s;
+}
 
-        .server-card h3 {
-            font-size: 30px;
-            margin-bottom: 12px;
-        }
+.btn-primary{
+    color:#001b0b;
 
-        .server-card p {
-            color: #999;
-            line-height: 1.6;
-        }
+    background:#00ff66;
 
-        .server-tag {
-            display: inline-block;
+    box-shadow:
+        0 0 25px
+        rgba(0,255,100,.18);
+}
 
-            margin-top: 25px;
-            padding: 8px 15px;
+.btn-primary:hover{
+    transform:
+        translateY(-4px)
+        scale(1.03);
 
-            border-radius: 20px;
+    box-shadow:
+        0 0 40px
+        rgba(0,255,100,.4);
+}
 
-            font-size: 13px;
-            font-weight: bold;
-        }
+.btn-secondary{
+    color:white;
 
-        /* =========================
-           IP BOX
-        ========================= */
+    background:
+        rgba(255,255,255,.06);
 
-        .ip-box {
-            text-align: center;
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+}
 
-            padding: 45px 25px;
+.btn-secondary:hover{
+    transform:translateY(-4px);
 
-            border-radius: 35px;
+    background:
+        rgba(255,255,255,.11);
+}
 
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(0,255,100,0.07),
-                    rgba(255,255,255,0.03)
-                );
 
-            border: 1px solid rgba(0,255,100,0.15);
-        }
+/* =========================
+   HERO
+========================= */
 
-        .ip-box h3 {
-            font-size: 30px;
-            margin-bottom: 15px;
-        }
+.hero{
+    min-height:100vh;
 
-        .ip-box p {
-            color: #888;
-        }
+    display:flex;
 
-        .ip {
-            display: inline-block;
+    align-items:center;
+    justify-content:center;
 
-            margin: 15px 0 25px;
-            padding: 15px 25px;
+    text-align:center;
 
-            border-radius: 25px;
+    padding:
+        130px 20px 80px;
+}
 
-            background: #080808;
+.hero-content{
+    max-width:900px;
 
-            border: 1px solid rgba(255,255,255,0.08);
+    animation:
+        heroIn 1s ease;
+}
 
-            color: #00ff66;
+@keyframes heroIn{
 
-            font-family: monospace;
-            font-size: 20px;
-        }
+    from{
+        opacity:0;
+        transform:translateY(35px);
+    }
 
-        /* =========================
-           ADMIN TEAM
-        ========================= */
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
 
-        .team {
-            display: grid;
+.badge{
+    display:inline-block;
 
-            grid-template-columns: repeat(5, 1fr);
+    padding:9px 17px;
 
-            gap: 18px;
-        }
+    border-radius:30px;
 
-        .member {
-            text-align: center;
+    color:#00ff66;
 
-            padding: 28px 15px;
+    background:
+        rgba(0,255,100,.08);
 
-            border-radius: 28px;
+    border:
+        1px solid
+        rgba(0,255,100,.2);
 
-            background: rgba(255,255,255,0.04);
+    margin-bottom:25px;
 
-            border: 1px solid rgba(255,255,255,0.07);
+    font-size:14px;
+}
 
-            transition: 0.35s;
-        }
+.hero h1{
+    font-size:
+        clamp(60px,12vw,125px);
 
-        .member:hover {
-            transform: translateY(-7px);
-            background: rgba(255,255,255,0.07);
-        }
+    line-height:.9;
 
-        .avatar {
-            width: 70px;
-            height: 70px;
+    font-weight:1000;
 
-            margin: 0 auto 18px;
+    letter-spacing:-6px;
 
-            border-radius: 50%;
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #00ff66,
+            #fff
+        );
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    background-size:200% auto;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #1c1c1c,
-                    #080808
-                );
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 
-            border: 2px solid rgba(255,255,255,0.08);
+    animation:
+        gradientMove 5s linear infinite;
+}
 
-            font-size: 25px;
-        }
+@keyframes gradientMove{
 
-        .member h3 {
-            font-size: 17px;
-            margin-bottom: 7px;
+    to{
+        background-position:
+            200% center;
+    }
+}
 
-            word-break: break-word;
-        }
+.hero p{
+    max-width:680px;
 
-        .member p {
-            color: #00ff66;
-            font-size: 13px;
-        }
+    margin:30px auto;
 
-        /* =========================
-           DISCORD
-        ========================= */
+    color:#999;
 
-        .discord {
-            text-align: center;
+    font-size:20px;
 
-            padding: 60px 25px;
+    line-height:1.6;
+}
 
-            border-radius: 35px;
+.hero-buttons{
+    display:flex;
 
-            background:
-                radial-gradient(
-                    circle at center,
-                    rgba(88,101,242,0.15),
-                    transparent 65%
-                );
+    justify-content:center;
 
-            border: 1px solid rgba(255,255,255,0.08);
-        }
+    gap:15px;
 
-        .discord h2 {
-            font-size: 42px;
-            margin-bottom: 15px;
-        }
+    flex-wrap:wrap;
+}
 
-        .discord p {
-            color: #999;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
 
-        .discord-btn {
-            background: #5865f2;
-            color: white;
-        }
+/* =========================
+   SECTION
+========================= */
 
-        .discord-btn:hover {
-            transform: translateY(-4px);
+section{
+    width:min(1100px,92%);
 
-            box-shadow:
-                0 10px 35px
-                rgba(88,101,242,0.3);
-        }
+    margin:auto;
 
-        /* =========================
-           FOOTER
-        ========================= */
+    padding:110px 0;
+}
 
-        footer {
-            text-align: center;
+.section-title{
+    text-align:center;
 
-            padding: 40px 20px;
+    margin-bottom:45px;
+}
 
-            color: #666;
+.section-title span{
+    color:#00ff66;
 
-            border-top:
-                1px solid
-                rgba(255,255,255,0.05);
-        }
+    font-size:13px;
 
-        footer strong {
-            color: #00ff66;
-        }
+    font-weight:bold;
 
-        /* =========================
-           TOAST
-        ========================= */
+    letter-spacing:2px;
 
-        .toast {
-            position: fixed;
+    text-transform:uppercase;
+}
 
-            bottom: 25px;
-            left: 50%;
+.section-title h2{
+    margin-top:10px;
 
-            transform:
-                translate(-50%, 100px);
+    font-size:
+        clamp(35px,5vw,55px);
+}
 
-            padding: 14px 22px;
+.section-title p{
+    margin-top:12px;
 
-            border-radius: 25px;
+    color:#888;
+}
 
-            background: #101010;
 
-            border:
-                1px solid
-                rgba(0,255,100,0.25);
+/* =========================
+   SERVERY
+========================= */
 
-            color: #00ff66;
+.servers{
+    display:grid;
 
-            opacity: 0;
+    grid-template-columns:
+        repeat(3,1fr);
 
-            transition: 0.4s;
+    gap:22px;
+}
 
-            z-index: 9999;
-        }
+.server-card{
+    padding:35px;
 
-        .toast.show {
-            opacity: 1;
+    min-height:310px;
 
-            transform:
-                translate(-50%, 0);
-        }
+    border-radius:32px;
 
-        /* =========================
-           MOBIL
-        ========================= */
+    background:
+        rgba(255,255,255,.04);
 
-        @media (max-width: 1000px) {
+    border:
+        1px solid
+        rgba(255,255,255,.08);
 
-            .servers {
-                grid-template-columns: 1fr;
-            }
+    transition:.4s;
+}
 
-            .team {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-        }
+.server-card:hover{
+    transform:
+        translateY(-9px)
+        scale(1.01);
 
-        @media (max-width: 650px) {
+    background:
+        rgba(255,255,255,.065);
+}
 
-            .nav-links {
-                display: none;
-            }
+.server-icon{
+    font-size:52px;
 
-            .hero h1 {
-                letter-spacing: -3px;
-            }
+    margin-bottom:20px;
+}
 
-            .hero p {
-                font-size: 17px;
-            }
-        }
+.server-card h3{
+    font-size:30px;
 
-        @media (max-width: 450px) {
+    margin-bottom:12px;
+}
 
-            .team {
-                grid-template-columns: 1fr;
-            }
-        }
+.server-card p{
+    color:#999;
 
-    </style>
+    line-height:1.6;
+}
+
+.server-tag{
+    display:inline-block;
+
+    margin-top:25px;
+
+    padding:8px 15px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+    font-weight:bold;
+}
+
+.smp{
+    border-color:
+        rgba(0,255,100,.2);
+}
+
+.smp .server-tag{
+    color:#00ff66;
+
+    background:
+        rgba(0,255,100,.08);
+}
+
+.bedwars{
+    border-color:
+        rgba(255,20,70,.25);
+}
+
+.bedwars .server-tag{
+    color:#ff4269;
+
+    background:
+        rgba(255,20,70,.08);
+}
+
+.oneblock{
+    border-color:
+        rgba(108,92,231,.25);
+}
+
+.oneblock .server-tag{
+    color:#9a8cff;
+
+    background:
+        rgba(108,92,231,.1);
+}
+
+
+/* =========================
+   OBCHOD
+========================= */
+
+.shop-section{
+    position:relative;
+}
+
+.shop-banner{
+    text-align:center;
+
+    margin-bottom:50px;
+}
+
+.shop-banner h2{
+    font-size:
+        clamp(40px,6vw,65px);
+
+    margin-bottom:15px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #00ff66,
+            #fff
+        );
+
+    background-size:200%;
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    animation:
+        gradientMove 5s linear infinite;
+}
+
+.shop-banner p{
+    max-width:650px;
+
+    margin:auto;
+
+    color:#999;
+
+    line-height:1.6;
+}
+
+.shop-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:22px;
+}
+
+.crate{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:32px 25px;
+
+    min-height:390px;
+
+    text-align:center;
+
+    border-radius:32px;
+
+    background:
+        rgba(255,255,255,.04);
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    transition:.4s;
+}
+
+.crate:hover{
+    transform:
+        translateY(-10px);
+
+    background:
+        rgba(255,255,255,.07);
+}
+
+.crate-icon{
+    font-size:75px;
+
+    margin:
+        10px 0 22px;
+
+    transition:.4s;
+}
+
+.crate:hover .crate-icon{
+    transform:
+        scale(1.12)
+        translateY(-7px)
+        rotate(4deg);
+}
+
+.crate h3{
+    font-size:27px;
+
+    margin-bottom:12px;
+}
+
+.crate p{
+    color:#999;
+
+    line-height:1.5;
+
+    min-height:48px;
+}
+
+.free{
+    display:inline-block;
+
+    margin:18px 0;
+
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    color:#00ff66;
+
+    background:
+        rgba(0,255,100,.08);
+
+    font-weight:bold;
+
+    font-size:13px;
+}
+
+.rewards{
+    color:#bbb;
+
+    line-height:1.8;
+
+    font-size:14px;
+
+    margin-bottom:22px;
+}
+
+.crate button{
+    width:100%;
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:14px;
+
+    border-radius:25px;
+
+    background:#00ff66;
+
+    color:#001b0b;
+
+    font-weight:bold;
+
+    transition:.3s;
+}
+
+.crate button:hover{
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 0 30px
+        rgba(0,255,100,.3);
+}
+
+
+/* BARVY BEDEN */
+
+.crate.fire{
+    border-color:
+        rgba(255,20,70,.25);
+}
+
+.crate.fire button{
+    background:#ff174f;
+
+    color:white;
+}
+
+.crate.fire .free{
+    color:#ff4269;
+
+    background:
+        rgba(255,20,70,.08);
+}
+
+.crate.legendary{
+    border-color:
+        rgba(255,210,50,.25);
+}
+
+.crate.legendary button{
+    background:#ffd43b;
+
+    color:#171300;
+}
+
+.crate.legendary .free{
+    color:#ffd43b;
+
+    background:
+        rgba(255,210,50,.08);
+}
+
+.crate.void{
+    border-color:
+        rgba(108,92,231,.3);
+}
+
+.crate.void button{
+    background:#6c5ce7;
+
+    color:white;
+}
+
+.crate.void .free{
+    color:#9a8cff;
+
+    background:
+        rgba(108,92,231,.1);
+}
+
+.crate.ice{
+    border-color:
+        rgba(0,200,255,.25);
+}
+
+.crate.ice button{
+    background:#00c8ff;
+
+    color:#001318;
+}
+
+.crate.ice .free{
+    color:#40d9ff;
+
+    background:
+        rgba(0,200,255,.08);
+}
+
+
+/* =========================
+   IP
+========================= */
+
+.ip-box{
+    text-align:center;
+
+    padding:50px 25px;
+
+    border-radius:35px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,255,100,.07),
+            rgba(255,255,255,.03)
+        );
+
+    border:
+        1px solid
+        rgba(0,255,100,.15);
+}
+
+.ip-box h3{
+    font-size:30px;
+
+    margin-bottom:15px;
+}
+
+.ip-box p{
+    color:#888;
+}
+
+.ip{
+    display:inline-block;
+
+    margin:
+        15px 0 25px;
+
+    padding:
+        15px 25px;
+
+    border-radius:25px;
+
+    background:#080808;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    color:#00ff66;
+
+    font-family:monospace;
+
+    font-size:20px;
+}
+
+
+/* =========================
+   ADMIN TEAM
+========================= */
+
+.team{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:18px;
+}
+
+.member{
+    text-align:center;
+
+    padding:28px 15px;
+
+    border-radius:28px;
+
+    background:
+        rgba(255,255,255,.04);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    transition:.35s;
+}
+
+.member:hover{
+    transform:
+        translateY(-7px);
+
+    background:
+        rgba(255,255,255,.07);
+}
+
+.avatar{
+    width:70px;
+    height:70px;
+
+    margin:
+        0 auto 18px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1c1c1c,
+            #080808
+        );
+
+    border:
+        2px solid
+        rgba(255,255,255,.08);
+
+    font-size:25px;
+}
+
+.member h3{
+    font-size:17px;
+
+    margin-bottom:7px;
+
+    word-break:break-word;
+}
+
+.member p{
+    color:#00ff66;
+
+    font-size:13px;
+}
+
+
+/* =========================
+   DISCORD
+========================= */
+
+.discord{
+    text-align:center;
+
+    padding:60px 25px;
+
+    border-radius:35px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(88,101,242,.15),
+            transparent 65%
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+}
+
+.discord h2{
+    font-size:42px;
+
+    margin-bottom:15px;
+}
+
+.discord p{
+    color:#999;
+
+    margin-bottom:25px;
+
+    line-height:1.6;
+}
+
+.discord-btn{
+    background:#5865f2;
+
+    color:white;
+}
+
+.discord-btn:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 10px 35px
+        rgba(88,101,242,.3);
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+    text-align:center;
+
+    padding:40px 20px;
+
+    color:#666;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.05);
+}
+
+footer strong{
+    color:#00ff66;
+}
+
+
+/* =========================
+   MODAL BEDNA
+========================= */
+
+.modal{
+    position:fixed;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        rgba(0,0,0,.8);
+
+    backdrop-filter:blur(10px);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.3s;
+
+    z-index:5000;
+}
+
+.modal.active{
+    opacity:1;
+
+    visibility:visible;
+}
+
+.modal-box{
+    width:min(500px,100%);
+
+    padding:45px 30px;
+
+    text-align:center;
+
+    border-radius:35px;
+
+    background:#101010;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    transform:scale(.8);
+
+    transition:.4s;
+}
+
+.modal.active .modal-box{
+    transform:scale(1);
+}
+
+.modal-icon{
+    font-size:80px;
+}
+
+.modal h2{
+    font-size:30px;
+
+    margin:
+        20px 0 10px;
+}
+
+.modal p{
+    color:#999;
+}
+
+.reward{
+    margin:25px 0;
+
+    padding:18px;
+
+    border-radius:25px;
+
+    color:#00ff66;
+
+    background:
+        rgba(0,255,100,.07);
+
+    border:
+        1px solid
+        rgba(0,255,100,.15);
+
+    font-weight:bold;
+}
+
+.close{
+    border:none;
+
+    cursor:pointer;
+
+    padding:13px 25px;
+
+    border-radius:25px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    color:white;
+
+    font-weight:bold;
+}
+
+.close:hover{
+    background:
+        rgba(255,255,255,.15);
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+    position:fixed;
+
+    bottom:25px;
+    left:50%;
+
+    transform:
+        translate(-50%,100px);
+
+    padding:14px 22px;
+
+    border-radius:25px;
+
+    background:#101010;
+
+    border:
+        1px solid
+        rgba(0,255,100,.25);
+
+    color:#00ff66;
+
+    opacity:0;
+
+    transition:.4s;
+
+    z-index:9999;
+}
+
+.toast.show{
+    opacity:1;
+
+    transform:
+        translate(-50%,0);
+}
+
+
+/* =========================
+   MOBIL
+========================= */
+
+@media(max-width:1000px){
+
+    .servers{
+        grid-template-columns:1fr;
+    }
+
+    .shop-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .team{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .hero h1{
+        letter-spacing:-3px;
+    }
+
+    .hero p{
+        font-size:17px;
+    }
+
+    .shop-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:450px){
+
+    .team{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
-    <!-- ANIMOVANÉ POZADÍ -->
 
-    <div class="background">
+<!-- POZADÍ -->
 
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
+<div class="background">
+
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+</div>
+
+
+<!-- NAVIGACE -->
+
+<nav>
+
+    <a href="#home" class="logo">
+        HranicMC
+    </a>
+
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="#servery">
+                🎮 Servery
+            </a>
+        </li>
+
+        <li>
+            <a href="#obchod">
+                🛒 Obchod
+            </a>
+        </li>
+
+        <li>
+            <a href="#tym">
+                👥 Admin Team
+            </a>
+        </li>
+
+        <li>
+            <a href="#discord">
+                💬 Discord
+            </a>
+        </li>
+
+    </ul>
+
+
+    <button
+        class="btn btn-primary"
+        onclick="copyIP()">
+
+        Připojit se
+
+    </button>
+
+</nav>
+
+
+<!-- =========================
+     HLAVNÍ STRÁNKA
+========================= -->
+
+<section class="hero" id="home">
+
+    <div class="hero-content">
+
+        <div class="badge">
+            🟢 Minecraft 1.21.11
+        </div>
+
+
+        <h1>
+            HRANICMC
+        </h1>
+
+
+        <p>
+
+            Tvůj Minecraft svět čeká.
+            Připoj se k HranicMC a užij si
+            SMP, BedWars, OneBlock a další
+            herní režimy.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <button
+                class="btn btn-primary"
+                onclick="copyIP()">
+
+                🎮 Připojit se
+
+            </button>
+
+
+            <a
+                href="#obchod"
+                class="btn btn-secondary">
+
+                🛒 Prohlédnout obchod
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SERVERY
+========================= -->
+
+<section id="servery">
+
+    <div class="section-title">
+
+        <span>
+            HranicMC Network
+        </span>
+
+        <h2>
+            Naše servery
+        </h2>
+
+        <p>
+            Vyber si svůj herní režim.
+        </p>
 
     </div>
 
 
-    <!-- NAVIGACE -->
+    <div class="servers">
 
-    <nav>
 
-        <a href="#" class="logo">
-            HranicMC
-        </a>
+        <div class="server-card smp">
 
-        <ul class="nav-links">
+            <div class="server-icon">
+                🌲
+            </div>
 
-            <li>
-                <a href="#servery">
-                    Servery
-                </a>
-            </li>
+            <h3>
+                SMP
+            </h3>
 
-            <li>
-                <a href="#tym">
-                    Admin Team
-                </a>
-            </li>
+            <p>
+                Klasický survival, stavění,
+                dobrodružství a hraní
+                s ostatními hráči.
+            </p>
 
-            <li>
-                <a href="#discord">
-                    Discord
-                </a>
-            </li>
+            <span class="server-tag">
+                🟢 SURVIVAL
+            </span>
 
-        </ul>
+        </div>
+
+
+        <div class="server-card bedwars">
+
+            <div class="server-icon">
+                🛏️
+            </div>
+
+            <h3>
+                BedWars
+            </h3>
+
+            <p>
+                Braň svou postel,
+                znič soupeře a staň se
+                posledním týmem.
+            </p>
+
+            <span class="server-tag">
+                🔴 BEDWARS
+            </span>
+
+        </div>
+
+
+        <div class="server-card oneblock">
+
+            <div class="server-icon">
+                🧊
+            </div>
+
+            <h3>
+                OneBlock
+            </h3>
+
+            <p>
+                Začni na jediném bloku,
+                postupuj přes fáze
+                a vybuduj vlastní ostrov.
+            </p>
+
+            <span class="server-tag">
+                🔵 ONEBLOCK
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     OBCHOD
+========================= -->
+
+<section
+    id="obchod"
+    class="shop-section">
+
+    <div class="shop-banner">
+
+        <div class="section-title">
+
+            <span>
+                HranicMC Shop
+            </span>
+
+            <h2>
+                🛒 Obchod
+            </h2>
+
+            <p>
+                Otevři virtuální bednu
+                a získej náhodnou odměnu.
+                Všechny bedny jsou zdarma.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="shop-grid">
+
+
+        <!-- HRANIC CRATE -->
+
+        <div class="crate">
+
+            <div class="crate-icon">
+                🎁
+            </div>
+
+            <h3>
+                Hranic Crate
+            </h3>
+
+            <p>
+                Základní bedna pro hráče.
+            </p>
+
+            <span class="free">
+                🟢 ZDARMA
+            </span>
+
+            <div class="rewards">
+
+                💰 100–500 Coins<br>
+                ⭐ 250–750 XP<br>
+                🎁 Náhodná odměna
+
+            </div>
+
+            <button
+                onclick="openCrate(
+                    'Hranic Crate',
+                    '🎁'
+                )">
+
+                Otevřít bednu
+
+            </button>
+
+        </div>
+
+
+        <!-- FIRE -->
+
+        <div class="crate fire">
+
+            <div class="crate-icon">
+                🔥
+            </div>
+
+            <h3>
+                Fire Crate
+            </h3>
+
+            <p>
+                Ohnivá bedna s lepšími odměnami.
+            </p>
+
+            <span class="free">
+                🟢 ZDARMA
+            </span>
+
+            <div class="rewards">
+
+                🔥 Fire Sword<br>
+                💰 500–1000 Coins<br>
+                ⭐ 750 XP
+
+            </div>
+
+            <button
+                onclick="openCrate(
+                    'Fire Crate',
+                    '🔥'
+                )">
+
+                Otevřít bednu
+
+            </button>
+
+        </div>
+
+
+        <!-- LEGENDARY -->
+
+        <div class="crate legendary">
+
+            <div class="crate-icon">
+                👑
+            </div>
+
+            <h3>
+                Legendary Crate
+            </h3>
+
+            <p>
+                Velmi vzácná legendární bedna.
+            </p>
+
+            <span class="free">
+                🟢 ZDARMA
+            </span>
+
+            <div class="rewards">
+
+                👑 Legendary Rank<br>
+                💎 2500 Coins<br>
+                ⭐ 2000 XP
+
+            </div>
+
+            <button
+                onclick="openCrate(
+                    'Legendary Crate',
+                    '👑'
+                )">
+
+                Otevřít bednu
+
+            </button>
+
+        </div>
+
+
+        <!-- VOID -->
+
+        <div class="crate void">
+
+            <div class="crate-icon">
+                🌌
+            </div>
+
+            <h3>
+                Void Crate
+            </h3>
+
+            <p>
+                Tajemná bedna z temného Voidu.
+            </p>
+
+            <span class="free">
+                🟢 ZDARMA
+            </span>
+
+            <div class="rewards">
+
+                🌌 Void Sword<br>
+                💜 1500 Coins<br>
+                ✨ Void Effect
+
+            </div>
+
+            <button
+                onclick="openCrate(
+                    'Void Crate',
+                    '🌌'
+                )">
+
+                Otevřít bednu
+
+            </button>
+
+        </div>
+
+
+        <!-- ICE -->
+
+        <div class="crate ice">
+
+            <div class="crate-icon">
+                🧊
+            </div>
+
+            <h3>
+                Ice Crate
+            </h3>
+
+            <p>
+                Ledová bedna pro dobrodruhy.
+            </p>
+
+            <span class="free">
+                🟢 ZDARMA
+            </span>
+
+            <div class="rewards">
+
+                🧊 Ice Armor<br>
+                💎 750 Coins<br>
+                ❄️ Frost Effect
+
+            </div>
+
+            <button
+                onclick="openCrate(
+                    'Ice Crate',
+                    '🧊'
+                )">
+
+                Otevřít bednu
+
+            </button>
+
+        </div>
+
+
+        <!-- SMP -->
+
+        <div class="crate">
+
+            <div class="crate-icon">
+                🌲
+            </div>
+
+            <h3>
+                SMP Crate
+            </h3>
+
+            <p>
+                Speciální bedna pro survival.
+            </p>
+
+            <span class="free">
+                🟢 ZDARMA
+            </span>
+
+            <div class="rewards">
+
+                🌲 Survival Kit<br>
+                💰 1000 Coins<br>
+                ⭐ 1500 XP
+
+            </div>
+
+            <button
+                onclick="openCrate(
+                    'SMP Crate',
+                    '🌲'
+                )">
+
+                Otevřít bednu
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     IP
+========================= -->
+
+<section>
+
+    <div class="ip-box">
+
+        <h3>
+            🎮 Připoj se na HranicMC
+        </h3>
+
+        <p>
+            Klikni na tlačítko a IP se automaticky zkopíruje.
+        </p>
+
+        <div class="ip">
+            Hranimc.aternos.me
+        </div>
+
+        <br>
 
         <button
             class="btn btn-primary"
             onclick="copyIP()">
 
-            Připojit se
+            📋 Zkopírovat IP
 
         </button>
 
-    </nav>
+    </div>
 
+</section>
 
-    <!-- HLAVNÍ STRÁNKA -->
 
-    <main>
+<!-- =========================
+     ADMIN TEAM
+========================= -->
 
-        <section class="hero">
+<section id="tym">
 
-            <div class="hero-content">
+    <div class="section-title">
 
-                <div class="badge">
-                    🟢 Minecraft 1.21.11
-                </div>
+        <span>
+            Náš tým
+        </span>
 
-                <h1>
-                    HRANICMC
-                </h1>
-
-                <p>
-                    Tvůj Minecraft svět čeká.
-                    Připoj se k HranicMC a užij si
-                    SMP, BedWars, OneBlock a další
-                    herní režimy.
-                </p>
-
-                <div class="hero-buttons">
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="copyIP()">
-
-                        🎮 Připojit se
-
-                    </button>
-
-                    <a
-                        href="#servery"
-                        class="btn btn-secondary">
-
-                        Prozkoumat servery →
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SERVERY -->
-
-        <section id="servery">
-
-            <div class="section-title">
-
-                <span>
-                    HranicMC Network
-                </span>
-
-                <h2>
-                    Naše servery
-                </h2>
-
-                <p>
-                    Vyber si svůj herní režim.
-                </p>
-
-            </div>
-
-
-            <div class="servers">
-
-                <!-- SMP -->
-
-                <div class="server-card smp">
-
-                    <div class="server-icon">
-                        🌲
-                    </div>
-
-                    <h3>
-                        SMP
-                    </h3>
-
-                    <p>
-                        Užij si klasický survival,
-                        stavění, dobrodružství a hraní
-                        s ostatními hráči.
-                    </p>
-
-                    <span class="server-tag">
-                        🟢 SURVIVAL
-                    </span>
-
-                </div>
-
-
-                <!-- BEDWARS -->
-
-                <div class="server-card bedwars">
-
-                    <div class="server-icon">
-                        🛏️
-                    </div>
-
-                    <h3>
-                        BedWars
-                    </h3>
-
-                    <p>
-                        Braň svou postel, znič soupeře
-                        a staň se posledním týmem
-                        na bojišti.
-                    </p>
-
-                    <span class="server-tag">
-                        🔴 BEDWARS
-                    </span>
-
-                </div>
-
-
-                <!-- ONEBLOCK -->
-
-                <div class="server-card oneblock">
-
-                    <div class="server-icon">
-                        🧊
-                    </div>
-
-                    <h3>
-                        OneBlock
-                    </h3>
-
-                    <p>
-                        Začni na jediném bloku,
-                        postupně ho rozšiřuj,
-                        objevuj nové fáze a vybuduj
-                        si vlastní ostrov.
-                    </p>
-
-                    <span class="server-tag">
-                        🔵 ONEBLOCK
-                    </span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- IP -->
-
-        <section>
-
-            <div class="ip-box">
-
-                <h3>
-                    🎮 Připoj se na HranicMC
-                </h3>
-
-                <p>
-                    Klikni na tlačítko a IP se
-                    automaticky zkopíruje.
-                </p>
-
-                <div class="ip">
-                    Hranimc.aternos.me
-                </div>
-
-                <br>
-
-                <button
-                    class="btn btn-primary"
-                    onclick="copyIP()">
-
-                    📋 Zkopírovat IP
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- ADMIN TEAM -->
-
-        <section id="tym">
-
-            <div class="section-title">
-
-                <span>
-                    Náš tým
-                </span>
-
-                <h2>
-                    Admin Team
-                </h2>
-
-                <p>
-                    Lidé, kteří se starají o HranicMC.
-                </p>
-
-            </div>
-
-
-            <div class="team">
-
-                <!-- MANAGER -->
-
-                <div class="member">
-
-                    <div class="avatar">
-                        👑
-                    </div>
-
-                    <h3>
-                        XDog_ik
-                    </h3>
-
-                    <p>
-                        Manager
-                    </p>
-
-                </div>
-
-
-                <!-- SP MAJITEL -->
-
-                <div class="member">
-
-                    <div class="avatar">
-                        🛡️
-                    </div>
-
-                    <h3>
-                        E005bq
-                    </h3>
-
-                    <p>
-                        Sp.majitel
-                    </p>
-
-                </div>
-
-
-                <!-- HL ADMIN -->
-
-                <div class="member">
-
-                    <div class="avatar">
-                        🔥
-                    </div>
-
-                    <h3>
-                        kzelva1111
-                    </h3>
-
-                    <p>
-                        HL.admin
-                    </p>
-
-                </div>
-
-
-                <!-- HLAVNÍ BUILDER -->
-
-                <div class="member">
-
-                    <div class="avatar">
-                        🧱
-                    </div>
-
-                    <h3>
-                        Kubasko1122
-                    </h3>
-
-                    <p>
-                        Hlavní builder
-                    </p>
-
-                </div>
-
-
-                <!-- MAJITEL -->
-
-                <div class="member">
-
-                    <div class="avatar">
-                        👑
-                    </div>
-
-                    <h3>
-                        MinecraftJeBorec
-                    </h3>
-
-                    <p>
-                        Majitel
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- DISCORD -->
-
-        <section id="discord">
-
-            <div class="discord">
-
-                <h2>
-                    💬 Přidej se na Discord
-                </h2>
-
-                <p>
-                    Připoj se ke komunitě HranicMC,
-                    sleduj novinky a domluv se
-                    s ostatními hráči.
-                </p>
-
-                <a
-                    href="https://discord.gg/cqYPTkprrE"
-                    target="_blank"
-                    class="btn discord-btn">
-
-                    💬 Otevřít Discord
-
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- PATIČKA -->
-
-    <footer>
+        <h2>
+            Admin Team
+        </h2>
 
         <p>
-            © 2026
-            <strong>HranicMC</strong>
-            · Minecraft server
+            Lidé, kteří se starají o HranicMC.
         </p>
-
-        <p style="margin-top:8px;">
-            Minecraft je ochranná známka
-            společnosti Mojang Studios.
-        </p>
-
-    </footer>
-
-
-    <!-- ZPRÁVA PO ZKOPÍROVÁNÍ IP -->
-
-    <div
-        id="toast"
-        class="toast">
-
-        ✓ IP adresa zkopírována!
 
     </div>
 
 
-    <!-- JAVASCRIPT -->
+    <div class="team">
 
-    <script>
 
-        const serverIP = "Hranimc.aternos.me";
+        <div class="member">
 
-        function copyIP() {
+            <div class="avatar">
+                👑
+            </div>
 
-            navigator.clipboard
-                .writeText(serverIP)
+            <h3>
+                XDog_ik
+            </h3>
 
-                .then(() => {
+            <p>
+                Manager
+            </p>
 
-                    const toast =
-                        document.getElementById("toast");
+        </div>
 
-                    toast.classList.add("show");
 
-                    setTimeout(() => {
+        <div class="member">
 
-                        toast.classList.remove("show");
+            <div class="avatar">
+                🛡️
+            </div>
 
-                    }, 2500);
+            <h3>
+                E005bq
+            </h3>
 
-                })
+            <p>
+                Sp.majitel
+            </p>
 
-                .catch(() => {
+        </div>
 
-                    alert(
-                        "IP serveru: " + serverIP
-                    );
 
-                });
+        <div class="member">
+
+            <div class="avatar">
+                🔥
+            </div>
+
+            <h3>
+                kzelva1111
+            </h3>
+
+            <p>
+                HL.admin
+            </p>
+
+        </div>
+
+
+        <div class="member">
+
+            <div class="avatar">
+                🧱
+            </div>
+
+            <h3>
+                Kubasko1122
+            </h3>
+
+            <p>
+                Hlavní builder
+            </p>
+
+        </div>
+
+
+        <div class="member">
+
+            <div class="avatar">
+                👑
+            </div>
+
+            <h3>
+                MinecraftJeBorec
+            </h3>
+
+            <p>
+                Majitel
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     DISCORD
+========================= -->
+
+<section id="discord">
+
+    <div class="discord">
+
+        <h2>
+            💬 Přidej se na Discord
+        </h2>
+
+        <p>
+            Připoj se ke komunitě HranicMC,
+            sleduj novinky a domluv se
+            s ostatními hráči.
+        </p>
+
+        <a
+            href="https://discord.gg/cqYPTkprrE"
+            target="_blank"
+            class="btn discord-btn">
+
+            💬 Otevřít Discord
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        © 2026
+        <strong>HranicMC</strong>
+        · Minecraft server
+    </p>
+
+    <p style="margin-top:8px;">
+        Minecraft je ochranná známka
+        společnosti Mojang Studios.
+    </p>
+
+</footer>
+
+
+<!-- =========================
+     MODAL
+========================= -->
+
+<div
+    id="modal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <div
+            id="modalIcon"
+            class="modal-icon">
+
+            🎁
+
+        </div>
+
+        <h2 id="modalTitle">
+            Bedna otevřena!
+        </h2>
+
+        <p>
+            Losování odměny...
+        </p>
+
+        <div
+            id="reward"
+            class="reward">
+
+            🎲 Losování...
+
+        </div>
+
+        <button
+            class="close"
+            onclick="closeModal()">
+
+            Zavřít
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+    id="toast"
+    class="toast">
+
+    ✓ IP adresa zkopírována!
+
+</div>
+
+
+<script>
+
+/* =========================
+   IP
+========================= */
+
+const serverIP =
+    "Hranimc.aternos.me";
+
+
+function copyIP(){
+
+    navigator.clipboard
+        .writeText(serverIP)
+
+        .then(() => {
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+            toast.classList.add("show");
+
+            setTimeout(() => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },2500);
+
+        })
+
+        .catch(() => {
+
+            alert(
+                "IP serveru: " +
+                serverIP
+            );
+
+        });
+
+}
+
+
+/* =========================
+   ODMĚNY
+========================= */
+
+const rewards = [
+
+    "💰 100 Coins",
+
+    "💰 250 Coins",
+
+    "💰 500 Coins",
+
+    "💰 1000 Coins",
+
+    "⭐ 500 XP",
+
+    "⭐ 1000 XP",
+
+    "⭐ 2000 XP",
+
+    "🔥 Fire Sword",
+
+    "❄️ Frost Effect",
+
+    "🌌 Void Sword",
+
+    "👑 Legendary Rank",
+
+    "🌲 Survival Kit"
+
+];
+
+
+/* =========================
+   OTEVŘENÍ BEDNY
+========================= */
+
+function openCrate(name,icon){
+
+    const modal =
+        document.getElementById(
+            "modal"
+        );
+
+    const modalIcon =
+        document.getElementById(
+            "modalIcon"
+        );
+
+    const modalTitle =
+        document.getElementById(
+            "modalTitle"
+        );
+
+    const reward =
+        document.getElementById(
+            "reward"
+        );
+
+
+    modalIcon.textContent =
+        icon;
+
+    modalTitle.textContent =
+        name + " otevřena!";
+
+    reward.textContent =
+        "🎲 Losování odměny...";
+
+
+    modal.classList.add(
+        "active"
+    );
+
+
+    setTimeout(() => {
+
+        const random =
+            rewards[
+                Math.floor(
+                    Math.random() *
+                    rewards.length
+                )
+            ];
+
+        reward.textContent =
+            random;
+
+    },1200);
+
+}
+
+
+/* =========================
+   ZAVŘENÍ
+========================= */
+
+function closeModal(){
+
+    document
+        .getElementById("modal")
+        .classList.remove(
+            "active"
+        );
+
+}
+
+
+/* kliknutí mimo okno */
+
+document
+    .getElementById("modal")
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target === this
+            ){
+
+                closeModal();
+
+            }
 
         }
+    );
 
-    </script>
+
+/* =========================
+   AKTIVNÍ MENU
+========================= */
+
+const sections =
+    document.querySelectorAll(
+        "section[id]"
+    );
+
+const links =
+    document.querySelectorAll(
+        ".nav-links a"
+    );
+
+window.addEventListener(
+    "scroll",
+    () => {
+
+        let current = "";
+
+        sections.forEach(
+            section => {
+
+                const top =
+                    section.offsetTop;
+
+                if(
+                    window.scrollY
+                    >= top - 200
+                ){
+
+                    current =
+                        section.getAttribute(
+                            "id"
+                        );
+
+                }
+
+            }
+        );
+
+        links.forEach(
+            link => {
+
+                link.classList.remove(
+                    "active"
+                );
+
+                if(
+                    link.getAttribute(
+                        "href"
+                    ) === "#" + current
+                ){
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
 
 </body>
 </html>
